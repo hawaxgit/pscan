@@ -1,12 +1,15 @@
 # pscan
 Python Port Scanner - Scan and identify open ports on target systems. Efficiently discover services running on specific IP addresses or hostnames. Customizable options for timeout, scan speed, and more. Ideal for network security assessments and troubleshooting. Contributions welcome.
 
-# Download Script 
+Installation
+To use pscan, follow these steps:
+
+1. Clone the repository:
 
 ```
 git clone https://github.com/hawaxgit/pscan.git
 ```
-# change directory and choise Script folder
+2. Change to the pscan directory:
 
 ```
 cd pscan
