@@ -24,7 +24,7 @@ sudo python scanner.py "IP ADDRESS OR Domian"
 ```
 Replace "IP ADDRESS OR DOMAIN" with the target IP address or domain name you want to scan. The script will perform a port scan and display the results.
 
-Contributions
+# Contributions
 Contributions to pscan are welcome! If you have any bug reports, feature requests, or would like to contribute code improvements, feel free to open an issue or submit a pull request.
 
 Happy scanning!
