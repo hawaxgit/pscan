@@ -4,7 +4,7 @@ import signal
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-AUTHOR = "Hawax"
+AUTHOR = "Soroush Tavanaei at Hawax IT"
 SCRIPT_NAME = "Portscanner"
 VERSION = "1.0"
 WEBSITE = "www.hawax.de"
