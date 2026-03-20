@@ -1,30 +1,40 @@
-# Port Scanner
-Python Port Scanner - Scan and identify open ports on target systems. Efficiently discover services running on specific IP addresses or hostnames. Customizable options for timeout, scan speed, and more. Ideal for network security assessments and troubleshooting. Contributions welcome.
+# Async Portscanner (pscan) 🚀
 
-# Installation
-To use pscan, follow these steps:
+![Version](https://img.shields.io/badge/version-3.0-blue.svg)
+![Python](https://img.shields.io/badge/python-3.7%2B-brightgreen.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-1. Clone the repository:
+A high-performance, asynchronous Python port scanner designed for speed and service identification. Unlike traditional scanners, `pscan` utilizes **Python's Asyncio** to handle thousands of concurrent connections and includes a **Banner Grabbing** engine to identify the software versions running on open ports.
 
-```
-git clone https://github.com/hawaxgit/pscan.git
-```
-2. Change to the pscan directory:
+---
 
-```
-cd pscan
+## ✨ Features
 
-```
+* **Asynchronous Engine:** Uses `asyncio` for extreme speed without the overhead of heavy threads.
+* **Banner Grabbing:** Automatically attempts to identify service versions (e.g., SSH, FTP, Apache).
+* **Network Support:** Scan single IPs or entire CIDR networks (e.g., `192.168.1.0/24`).
+* **Concurrency Control:** Adjustable semaphore to manage system resources and scan intensity.
+* **Clean CLI:** Real-time feedback and formatted output for security assessments.
 
-# Usage
-To run the script, use the following command:
+---
 
-```
-sudo python scanner.py "IP ADDRESS OR Domian"
-```
-Replace "IP ADDRESS OR DOMAIN" with the target IP address or domain name you want to scan. The script will perform a port scan and display the results.
+## 🚀 Installation
 
-# Contributions
-Contributions to pscan are welcome! If you have any bug reports, feature requests, or would like to contribute code improvements, feel free to open an issue or submit a pull request.
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/hawaxgit/pscan.git](https://github.com/hawaxgit/pscan.git)
+    cd pscan
+    ```
 
-Happy scanning!
+2.  **Requirements:**
+    This script uses the Python Standard Library. Ensure you have **Python 3.7+** installed. No external pip packages are required for the core functionality.
+
+---
+
+## 🛠 Usage
+
+To run a basic scan against a target:
+
+```bash
+python Async_Portscanner.py 192.168.1.1
+
