@@ -5,99 +5,94 @@ import sys
 from ipaddress import ip_network
 
 AUTHOR = "Soroush at Hawax"
-SCRIPT_NAME = "Async Portscanner"
-VERSION = "3.0"
+SCRIPT_NAME = "Smart Async Portscanner"
+VERSION = "3.2"
+
+# Expanded list of the most common 100 ports (for ultra-fast scanning)
+# If you want the full Top 1000, we use a range logic below.
+COMMON_PORTS = [
+    20, 21, 22, 23, 25, 53, 67, 68, 69, 80, 110, 111, 123, 135, 137, 138, 139, 143, 161, 
+    389, 443, 445, 514, 515, 548, 631, 636, 993, 995, 1080, 1433, 1434, 1521, 1701, 1723, 
+    2049, 3128, 3306, 3389, 4000, 4848, 5000, 5432, 5632, 5800, 5900, 5985, 6000, 6379, 
+    7001, 7077, 8000, 8080, 8081, 8443, 8888, 9000, 9200, 9443, 10000, 27017
+]
 
 async def grab_banner(reader, writer):
-    """
-    Attempts to read initial data (banner) from the open port 
-    to identify the software version.
-    """
+    """Attempts to identify the software/service version."""
     try:
-        # Wait a short moment for the server to send its greeting/banner
+        # Some services require a small nudge to send a banner
         data = await asyncio.wait_for(reader.read(1024), timeout=1.5)
         banner = data.decode('utf-8', errors='ignore').strip().replace('\n', ' ')
-        return banner[:60]  # Limit output length to 60 characters
-    except (asyncio.TimeoutError, Exception):
-        return "No banner received (Silent/No response)"
+        return banner[:60] if banner else "Connected (No banner/Silent)"
+    except:
+        return "Unknown Service"
 
 async def scan_port(ip, port, timeout, semaphore):
-    """
-    Asynchronously attempts to connect to a specific IP and port.
-    """
+    """Scans a single port and prints only if it's OPEN."""
     async with semaphore:
         try:
-            # Attempt to open a connection
             conn = asyncio.open_connection(ip, port)
             reader, writer = await asyncio.wait_for(conn, timeout=timeout)
             
-            # If successful, try to identify the service/software
+            # Identify the service
             banner = await grab_banner(reader, writer)
-            
-            print(f"[+] {ip}:{port:<5} | STATUS: OPEN  | INFO: {banner}")
+            print(f"[+] {ip:<15} | Port: {port:<5} | Service: {banner}")
             
             writer.close()
             await writer.wait_closed()
-            return True
-        except (asyncio.TimeoutError, ConnectionRefusedError, OSError):
-            # Port is closed, filtered, or unreachable
-            return False
+        except:
+            # Closed or filtered ports are ignored for a clean UI
+            pass
 
 async def main_scanner(args):
-    """
-    Main orchestration logic for the scanning process.
-    """
     start_time = time.time()
     
-    # Validate and expand the network/IP range
     try:
         net = ip_network(args.ip, strict=False)
         ips = [str(ip) for ip in net]
     except ValueError:
-        print(f"[-] Error: Invalid IP address or network range: {args.ip}")
+        print(f"[-] Error: '{args.ip}' is not a valid IP address or CIDR network.")
         return
 
-    # Semaphore limits the number of CONCURRENT connections to prevent OS crashes
+    # Logic to decide WHICH ports to scan
+    if args.all:
+        port_list = range(1, 65536)
+        mode_label = "Full Scan (1-65535)"
+    elif args.top:
+        port_list = range(1, 1001)
+        mode_label = "Top 1000 Ports"
+    else:
+        port_list = COMMON_PORTS
+        mode_label = "Common Services (Smart Mode)"
+
     semaphore = asyncio.Semaphore(args.max_concurrency)
-    
-    tasks = []
+    tasks = [scan_port(ip, port, args.timeout, semaphore) for ip in ips for port in port_list]
+
     print("-" * 75)
-    print(f"[*] Scanning {len(ips)} IP(s) for ports {args.start_port} to {args.end_port}...")
-    print(f"[*] Concurrency Limit: {args.max_concurrency} parallel requests")
+    print(f"[*] Starting {SCRIPT_NAME} v{VERSION}")
+    print(f"[*] Target(s):  {args.ip} ({len(ips)} IP address(es))")
+    print(f"[*] Scan Mode:  {mode_label}")
+    print(f"[*] Threads:    {args.max_concurrency} (Concurrent)")
     print("-" * 75 + "\n")
 
-    # Generate scan tasks for all IPs and Ports
-    for ip in ips:
-        for port in range(args.start_port, args.end_port + 1):
-            tasks.append(scan_port(ip, port, args.timeout, semaphore))
-
-    # Execute all tasks concurrently
     await asyncio.gather(*tasks)
 
-    end_time = time.time()
+    duration = time.time() - start_time
     print("\n" + "-" * 75)
-    print(f"{SCRIPT_NAME} {VERSION} completed in {end_time - start_time:.2f} seconds")
-    print(f"Author: {AUTHOR} | {WEBSITE}")
+    print(f"[*] Scan finished in {duration:.2f} seconds.")
+    print(f"[*] Author: {AUTHOR} | {WEBSITE}")
     print("-" * 75)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Professional Asynchronous Portscanner & Banner Grabber")
-    parser.add_argument("ip", help="Target IP or CIDR network (e.g., 192.168.1.1 or 192.168.1.0/24)")
-    parser.add_argument("--start-port", type=int, default=1, help="Starting port (Default: 1)")
-    parser.add_argument("--end-port", type=int, default=1024, help="Ending port (Default: 1024)")
-    parser.add_argument("--timeout", type=float, default=1.5, help="Timeout in seconds (Default: 1.5)")
-    parser.add_argument("--max-concurrency", type=int, default=500, help="Max simultaneous connections (Default: 500)")
-
-    args = parser.parse_args()
-
-    # ASCII Header
-    print("-" * 75)
-    print(f"Welcome to {SCRIPT_NAME} v{VERSION}")
-    print(f"Developed by {AUTHOR}")
-    print("-" * 75)
+    parser = argparse.ArgumentParser(description="Professional Smart Async Portscanner")
+    parser.add_argument("ip", help="Target IP or Network (e.g. 192.168.1.1 or 192.168.1.0/24)")
+    parser.add_argument("--all", action="store_true", help="Scan ALL 65535 ports (Slowest)")
+    parser.add_argument("--top", action="store_true", help="Scan Top 1000 most common ports")
+    parser.add_argument("--timeout", type=float, default=1.0, help="Connection timeout (sec)")
+    parser.add_argument("--max-concurrency", type=int, default=1000, help="Max parallel tasks")
 
     try:
-        asyncio.run(main_scanner(args))
+        asyncio.run(main_scanner(parser.parse_args()))
     except KeyboardInterrupt:
-        print("\n[!] Scan interrupted by user. Exiting...")
+        print("\n[!] Scan cancelled by user.")
         sys.exit(0)
