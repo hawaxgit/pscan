@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/python-3.7%2B-brightgreen.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-A high-performance, asynchronous Python port scanner designed for speed and service identification. Unlike traditional scanners, `pscan` utilizes **Python's Asyncio** to handle thousands of concurrent connections and includes a **Banner Grabbing** engine to identify the software versions running on open ports.
+A high-performance, asynchronous Python port scanner designed for speed and service identification. Unlike traditional scanners, `Async PortScanner` utilizes **Python's Asyncio** to handle thousands of concurrent connections and includes a **Banner Grabbing** engine to identify the software versions running on open ports.
 
 ---
 
@@ -22,8 +22,8 @@ A high-performance, asynchronous Python port scanner designed for speed and serv
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/hawaxgit/pscan.git](https://github.com/hawaxgit/pscan.git)
-    cd pscan
+    git clone [https://github.com/hawaxgit/pscan.git](https://github.com/hawaxgit/Async_Portscanner.git)
+    cd Async_Portscanner
     ```
 
 2.  **Requirements:**
