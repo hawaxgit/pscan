@@ -1,4 +1,4 @@
-# Async Portscanner (pscan) 🚀
+# Async Portscanner 🚀
 
 ![Version](https://img.shields.io/badge/version-3.0-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.7%2B-brightgreen.svg)
