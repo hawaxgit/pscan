@@ -22,7 +22,7 @@ A high-performance, asynchronous Python port scanner designed for speed and serv
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/hawaxgit/Async_Portscanner.git)
+    git clone https://github.com/hawaxgit/Async_Portscanner.git
     
     cd Async_Portscanner
     ```
